@@ -1,15 +1,51 @@
 import argparse
+from .mythreading import MyThreading
 
 
 def my_threading():
-    my_threading_parser = argparse.ArgumentParser(
+    my_threading_main_parser = argparse.ArgumentParser(
         description="Run default threading example"
     )
+    my_threading_parser = my_threading_main_parser.add_mutually_exclusive_group()
     my_threading_parser.add_argument(
-        "--run", action="store_true", help="Run default threading example"
+        "--nd-concurrent", action="store_true", help="'Non daemon' concurrent example."
     )
-    my_args = my_threading_parser.parse_args()
-    print(my_args.run)
+    my_threading_parser.add_argument(
+        "--nd-nj-concurrent",
+        action="store_true",
+        help="'Non daemon' 'non-join' concurrent example.",
+    )
+    my_threading_parser.add_argument(
+        "--nd-serial", action="store_true", help="'Non daemon' serial example."
+    )
+    my_threading_parser.add_argument(
+        "--d-concurrent", action="store_true", help="'Daemon' concurrent example."
+    )
+    my_threading_parser.add_argument(
+        "--d-nj-concurrent",
+        action="store_true",
+        help="'Daemon' 'non-join' concurrent example.",
+    )
+    my_threading_parser.add_argument(
+        "--i-printalpha",
+        action="store_true",
+        help="Thread by inheritence example. Define own class that prints alphabet.",
+    )
+
+    my_args = my_threading_main_parser.parse_args()
+    mythreadingexamples = MyThreading()
+    if my_args.nd_concurrent == True:
+        mythreadingexamples.non_daemon_concurrent_example()
+    if my_args.nd_serial == True:
+        mythreadingexamples.non_daemon_serial_example()
+    if my_args.nd_nj_concurrent == True:
+        mythreadingexamples.non_daemon_no_join_concurrent_example()
+    if my_args.d_concurrent == True:
+        mythreadingexamples.daemon_concurrent_example()
+    if my_args.d_nj_concurrent == True:
+        mythreadingexamples.daemon_no_join_concurrent_example()
+    if my_args.i_printalpha == True:
+        mythreadingexamples.print_alpha()
 
 
 def my_concurrentfutures():
