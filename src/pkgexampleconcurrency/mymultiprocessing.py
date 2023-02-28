@@ -1,5 +1,6 @@
 import multiprocessing
 from multiprocessing import Pool
+from collections import deque
 import random
 import time
 
@@ -488,5 +489,22 @@ for the queue to be empty.
 """
         )
 
+    ##------ Does dequeue work with multiuprocessing? If so give an example
+    def multiprocessing_using_a_dequeue(self):
+        print(
+            """ 
+Unfortunately multiprocessing DOES NOT support deque.
 
-##------ Does dequeue work with multiuprocessing? If so give an example
+If you want to share objects between processes
+Look in to https://docs.python.org/3/library/multiprocessing.html#managers
+
+A manager returned by Manager() will support types list, dict, Namespace, 
+Lock, RLock, Semaphore, BoundedSemaphore, Condition, Event, Barrier, Queue, 
+Value and Array. 
+
+If you need a queue, stick with multiprocessing.Queue() and 
+multiprocessing.JoinableQueue()
+
+
+            """
+        )

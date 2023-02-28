@@ -51,6 +51,11 @@ def my_threading():
         action="store_true",
         help="Threading 'queue join' example",
     )
+    my_threading_parser.add_argument(
+        "--qdqexample",
+        action="store_true",
+        help="Threading with deque example",
+    )
 
     my_args = my_threading_main_parser.parse_args()
     mythreadingexamples = MyThreading()
@@ -72,6 +77,8 @@ def my_threading():
         mythreadingexamples.threading_queue_lock_example()
     if my_args.qjexample == True:
         mythreadingexamples.threading_queue_join_example()
+    if my_args.qdqexample == True:
+        mythreadingexamples.threading_using_a_deque()
 
 
 def my_multiprocessing():
@@ -125,6 +132,11 @@ def my_multiprocessing():
         action="store_true",
         help="Multiprocess with joinable queue.",
     )
+    my_multiprocessing_parser.add_argument(
+        "--qdqexample",
+        action="store_true",
+        help="Multiprocess with a dequeue.",
+    )
 
     my_args = my_main_multiprocessing_parser.parse_args()
     mymultiprocessingexamples = MyMultiprocessing()
@@ -146,6 +158,8 @@ def my_multiprocessing():
         mymultiprocessingexamples.multiprocessing_queue_lock_example()
     if my_args.qjexample == True:
         mymultiprocessingexamples.multiprocessing_joinable_queue()
+    if my_args.qdqexample == True:
+        mymultiprocessingexamples.multiprocessing_using_a_dequeue()
 
 
 def my_concurrentfutures():

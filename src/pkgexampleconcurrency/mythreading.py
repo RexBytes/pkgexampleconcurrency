@@ -2,6 +2,7 @@ import threading
 import time
 import queue
 import random
+from collections import deque
 
 
 class OutputAlpha(threading.Thread):
@@ -85,6 +86,21 @@ class MyThreading:
                 time.sleep(2 * random.random())
             except queue.Empty:
                 break
+
+    def item_producer_with_deque(self, my_deque):
+        for i in range(10):
+            time.sleep(1)
+            print(f"Produced item {i}")
+            my_deque.append(i)
+
+    def item_consumer_with_deque(self, my_deque):
+        while True:
+            time.sleep(2)
+            if my_deque:
+                item = my_deque.popleft()
+                if item is None:
+                    break
+                print(f"Consuming item {item}")
 
     def print_alpha(self):
         print(
@@ -546,5 +562,83 @@ thread2.join()
         builtin_queue.put(None)
         thread2.join()
 
+    ##------ Does dequeue work with threading? If so give an example
+    def threading_using_a_deque(self):
+        print("threading using a deque")
+        print(
+            """
+# This is a THREADING example using DEQUE
+# deque is thread safe and has some extra commands over queue.Queue
+#
+# For example,
+#
+#append(item) and appendleft(item):         add an item to the right or left side of the deque, respectively.
+#pop() and popleft():                       remove and return an item from the right or left side of the deque, respectively.
+#extend(iterable) and extendleft(iterable): extend the deque on the right or left side with the items from an iterable, respectively.
+#rotate(n):                                 rotate the deque n steps to the right (positive n) or left (negative n).
+#
+# A deque queue does not have .join()
 
-##------ Does dequeue work with threading? If so give an example
+# First we create a producer and consumer,
+            
+
+def item_producer_with_deque(self, my_deque):
+    for i in range(10):
+        time.sleep(1)
+        print(f"Produced item {i}")
+        my_deque.append(i)
+
+def item_consumer_with_deque(self, my_deque):
+    while True:
+        time.sleep(2)
+        if my_deque:
+            item = my_deque.popleft()
+            if item is None:
+                break
+            print(f"Consuming item {item}")
+
+# We create a deque Queue, 
+
+my_deque = deque()
+
+# Pass it to a couple of threads targeting our producer and consumer.
+
+thread1 = threading.Thread(
+    target=self.item_producer_with_deque, args=(my_deque,)
+)
+thread2 = threading.Thread(
+    target=self.item_consumer_with_deque, args=(my_deque,)
+)
+
+# We start the threads in a concurrent configuration,
+
+thread1.start()
+thread2.start()
+
+thread1.join()
+# We then add None to the queue to indicate the end of the queue.
+# Note, we do this after our process that adds tasks to the queue joins.
+my_deque.append(None)
+thread2.join()
+
+        """
+        )
+
+        my_deque = deque()
+
+        thread1 = threading.Thread(
+            target=self.item_producer_with_deque, args=(my_deque,)
+        )
+        thread2 = threading.Thread(
+            target=self.item_consumer_with_deque, args=(my_deque,)
+        )
+
+        thread1.start()
+        thread2.start()
+
+        thread1.join()
+        my_deque.append(None)
+        thread2.join()
+        print(
+            "This print statement is shown after the producer and consumer have joined allowing the main thread to exit."
+        )
