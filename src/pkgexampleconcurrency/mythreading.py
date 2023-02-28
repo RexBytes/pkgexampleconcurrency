@@ -1,5 +1,6 @@
 import threading
 import time
+import queue
 import random
 
 
@@ -30,6 +31,60 @@ class MyThreading:
         for i in range(1, max_num + 1, 2):
             time.sleep(i + 1)
             print(i)
+
+    def item_producer(self, builtin_queue_class):
+        for i in range(10):
+            time.sleep(1)
+            print(f"Produced item {i}")
+            builtin_queue_class.put(i)
+
+    def item_consumer(self, builtin_queue_class):
+        while True:
+            try:
+                time.sleep(2)
+                item = builtin_queue_class.get()
+                if item is None:
+                    break
+                print(f"Consuming item {item}")
+            except queue.Empty:
+                break
+
+    def item_consumer_taskdone(self, builtin_queue_class):
+        while True:
+            try:
+                time.sleep(2)
+                item = builtin_queue_class.get()
+                if item is None:
+                    ##If using queue.join() remember, NONE is still an item in the queue and you must call .task_done()
+                    builtin_queue_class.task_done()
+                    break
+                print(f"Consuming item {item}")
+                builtin_queue_class.task_done()
+            except queue.Empty:
+                break
+
+    def item_producer_with_lock(self, builtin_queue_class, threading_lock):
+        for i in range(10):
+            with threading_lock:
+                print(f"Produced item {i}")
+                builtin_queue_class.put(i)
+            time.sleep(random.random())
+
+    def item_consumer_with_lock(self, builtin_queue_class, threading_lock):
+        while True:
+            try:
+                with threading_lock:
+                    # You must check if the queue is empty or not
+                    # when using threading locks.  If you don't
+                    # you should jam your worker methods.
+                    if not builtin_queue_class.empty():
+                        item = builtin_queue_class.get()
+                        if item is None:
+                            break
+                        print(f"Consuming item {item}")
+                time.sleep(2 * random.random())
+            except queue.Empty:
+                break
 
     def print_alpha(self):
         print(
@@ -266,3 +321,230 @@ get a chance to complete its job.  Ofcourse, if the main thread is kept alive
 by some other task your daemon threads might stand a chance at doing their jobs concurrently.
 """
         )
+
+    # def <> threading queue example using built in queue module
+    def threading_queue_example(self):
+        print("threading_queue_example")
+        print(
+            """ 
+#This is a THREADING WITH QUEUE example. Using the built in threading, and 
+#built in queue class. We create a producer and and consumer method.
+
+
+def item_producer(self, args):
+    builtin_queue_class = args
+    for i in range(10):
+        time.sleep(1)
+        print(f"Produced item {i}")
+        builtin_queue_class.put(i)
+
+def item_consumer(self, args):
+    builtin_queue_class = args
+    while True:
+        time.sleep(2)
+        item = builtin_queue_class.get()
+        if item is None:
+            break
+        print(f"Consuming item {item}")
+        builtin_queue_class.task_done()
+
+#We create a queue object of type builtin queue.Queue()
+#Create a thread for the producer, and consumer and pass
+#in the queue as a tuple set to an args variable. The args
+#variable is unpacked by the methods.
+
+builtin_queue = queue.Queue()
+thread1 = threading.Thread(target=self.item_producer, args=(builtin_queue,))
+thread2 = threading.Thread(target=self.item_consumer, args=(builtin_queue,))
+
+#We then start the threads in the concurrent configuration.
+#Note we add a None item to the queue as an indicator that the 
+#end of the queue has been reached.
+
+thread1.start()
+thread2.start()
+
+thread1.join()
+builtin_queue.put(None)
+thread2.join()
+
+            """
+        )
+
+        builtin_queue = queue.Queue()
+        thread1 = threading.Thread(target=self.item_producer, args=(builtin_queue,))
+        thread2 = threading.Thread(target=self.item_consumer, args=(builtin_queue,))
+
+        thread1.start()
+        thread2.start()
+
+        thread1.join()
+        builtin_queue.put(None)
+        thread2.join()
+
+        print(
+            """This is a print satement that you should only see after the threads have finished their work."""
+        )
+
+    # def <> threading queue example using built in queue module and threading.lock()
+    def threading_queue_lock_example(self):
+        print(
+            """ 
+# This is a THREADING WITH QUEUE and LOCK example.
+# We create a produducer and a consumer that accept
+# a queue and a threading lock.
+
+def item_producer_with_lock(self, builtin_queue_class, threading_lock):
+    for i in range(10):
+        with threading_lock:
+            print(f"Produced item {i}")
+            builtin_queue_class.put(i)
+        time.sleep(random.random())
+
+def item_consumer_with_lock(self, builtin_queue_class, threading_lock):
+    while True:
+        try:
+            with threading_lock:
+                #You must check if the queue is empty or not
+                #when using threading locks.  If you don't
+                #you should jam your worker methods.
+                if not builtin_queue_class.empty():
+                    item = builtin_queue_class.get()
+                    if item is None:
+                        break
+                    print(f"Consuming item {item}")
+            time.sleep(2 * random.random())
+        except queue.Empty:
+            break
+
+# We then create a queue, and a threading lock.
+            
+builtin_queue = queue.Queue()
+threading_lock = threading.Lock()
+
+# We create two threads targeting our consumer and producer
+# and pass in our queue and lock.
+
+thread1 = threading.Thread(
+    target=self.item_producer_with_lock,
+    args=(builtin_queue, threading_lock),
+)
+thread2 = threading.Thread(
+    target=self.item_consumer_with_lock,
+    args=(builtin_queue, threading_lock),
+)
+
+# We then start the threads in a concurrent configuration.
+
+thread1.start()
+thread2.start()
+
+thread1.join()
+# Remember to pass in the end of queue indicator.
+builtin_queue.put(None)
+thread2.join()
+            
+            """
+        )
+
+        builtin_queue = queue.Queue()
+        threading_lock = threading.Lock()
+        thread1 = threading.Thread(
+            target=self.item_producer_with_lock,
+            args=(builtin_queue, threading_lock),
+        )
+        thread2 = threading.Thread(
+            target=self.item_consumer_with_lock,
+            args=(builtin_queue, threading_lock),
+        )
+
+        thread1.start()
+        thread2.start()
+
+        thread1.join()
+        builtin_queue.put(None)
+        thread2.join()
+
+        print(
+            """This is a print satement that you should only see after the threads have finished their work."""
+        )
+
+    # def <> threading queue example with queue.join()
+    def threading_queue_join_example(self):
+        print("threading_queue_example")
+        print(
+            """ 
+# This is a THREADING WITH QUEUE, with QUEUE.JOIN() example.
+# Queue.join() blocks the main thread from exiting until all 
+# the items in the queue have been processed by the worker 
+# threads and their associated task_done() method has been called.
+# Queue.join() should be called once, in the main thread, after all 
+# worker threads have been started and before the program exits.
+
+# First we create the producer and consumer threads.
+
+def item_producer(self, builtin_queue_class):
+    for i in range(10):
+        time.sleep(1)
+        print(f"Produced item {i}")
+        builtin_queue_class.put(i)
+
+def item_consumer_taskdone(self, builtin_queue_class):
+    while True:
+        try:
+            time.sleep(2)
+            item = builtin_queue_class.get()
+            if item is None:
+                ##If using queue.join() remember, NONE is still an item in the queue and you must call .task_done()
+                builtin_queue_class.task_done()
+                break
+            print(f"Consuming item {item}")
+            builtin_queue_class.task_done()
+        except queue.Empty:
+            break
+
+# We create a queue
+builtin_queue = queue.Queue()
+
+# Then create threads targeting our producer and consumer and
+# feedin our queue.
+
+thread1 = threading.Thread(target=self.item_producer, args=(builtin_queue,))
+thread2 = threading.Thread(
+    target=self.item_consumer_taskdone, args=(builtin_queue,)
+)
+
+# We start the threads in a concurrent configuration.
+
+thread1.start()
+thread2.start()
+
+# And call join on our queue.
+builtin_queue.join()
+
+thread1.join()
+# Don't forget to indicate the end of the list by adding None to the end of the queue.
+builtin_queue.put(None)
+thread2.join()
+
+
+            """
+        )
+
+        builtin_queue = queue.Queue()
+        thread1 = threading.Thread(target=self.item_producer, args=(builtin_queue,))
+        thread2 = threading.Thread(
+            target=self.item_consumer_taskdone, args=(builtin_queue,)
+        )
+
+        thread1.start()
+        thread2.start()
+
+        builtin_queue.join()
+
+        thread1.join()
+        builtin_queue.put(None)
+        thread2.join()
+
+
+##------ Does dequeue work with threading? If so give an example
