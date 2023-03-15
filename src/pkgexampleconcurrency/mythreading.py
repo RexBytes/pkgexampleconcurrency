@@ -3,6 +3,7 @@ import time
 import queue
 import random
 from collections import deque
+import os
 
 
 class OutputAlpha(threading.Thread):
@@ -49,6 +50,52 @@ class MyThreading:
                 print(f"Consuming item {item}")
             except queue.Empty:
                 break
+
+    def thread_count(self):
+        k = 5
+        max_threads = k * os.cpu_count()
+        print(
+            f"""If you at anypoint use the concurrent futures module,
+This would be your maxium number of concurrent threads.
+
+    ThreadPoolExecutor(max_workers={max_threads})
+    
+Of course, you could double the number, but half of your threads 
+won't be executing concurrently
+
+This was estimated using a rule of thumb multiplication,
+
+  max_threads = k * os.cpu_count()
+
+Your code task *might* suffer performance issues if you load your system 
+with too many threads.  Experimentation per hardware is recomended.
+
+Of course, systems and OS can have many threads.
+
+cat /proc/sys/kernel/threads-max 
+125998
+
+The /proc/sys/kernel/threads-max file is a system file on Linux systems that specifies the maximum number
+of threads that can be created system-wide. This value represents the absolute upper limit on the number 
+of threads that can be created on the system, regardless of the number of available CPUs or the amount of 
+available memory.
+
+When you create a ThreadPoolExecutor object and specify the max_workers parameter, the executor will create 
+a pool of worker threads with the specified maximum number of threads. However, this maximum number of 
+threads is subject to various limits and constraints such as the amount of available memory and system 
+resources, as well as the value of /proc/sys/kernel/threads-max.
+
+In general, the number of threads created by the ThreadPoolExecutor should be less than or equal to the value 
+of /proc/sys/kernel/threads-max to avoid resource exhaustion and system instability. If you attempt to create 
+more threads than allowed by the system's threads-max limit, the thread creation will fail and you will receive 
+an error.
+
+Therefore, when working with ThreadPoolExecutor or any other multithreaded program on a Linux system, it's 
+important to keep in mind the system's threads-max limit and design your program to stay within this limit 
+to ensure stable and reliable operation.
+
+"""
+        )
 
     def item_consumer_taskdone(self, builtin_queue_class):
         while True:

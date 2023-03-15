@@ -22,7 +22,17 @@ class MyMultiprocessing:
         pass
 
     def count_cpu(self):
-        print("CPU Count : ", multiprocessing.cpu_count())
+        cpu_count = multiprocessing.cpu_count()
+        print("CPU Count : ", cpu_count)
+        print(
+            f"""If you at anypoint use the concurrent futures module,
+This would be your maxium number of concurrent workers.
+
+    ProcessPoolExecutor(max_workers={cpu_count})
+    
+Of course, you could double the number, but half of your processes 
+won't be executing concurrently"""
+        )
 
     def print_evens(self):
         max_num = 6

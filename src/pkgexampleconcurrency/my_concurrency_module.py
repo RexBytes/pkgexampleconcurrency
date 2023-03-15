@@ -1,6 +1,7 @@
 import argparse
 from .mythreading import MyThreading
 from .mymultiprocessing import MyMultiprocessing
+from .myconcurrentfutures import MyThreadConcurrentfutures, MyProcessConcurrentfutures
 
 
 def my_threading():
@@ -8,6 +9,11 @@ def my_threading():
         description="Run default threading example"
     )
     my_threading_parser = my_threading_main_parser.add_mutually_exclusive_group()
+    my_threading_parser.add_argument(
+        "--thread-count",
+        action="store_true",
+        help="Max number of threads on your physical system",
+    )
     my_threading_parser.add_argument(
         "--nd-concurrent",
         action="store_true",
@@ -59,6 +65,8 @@ def my_threading():
 
     my_args = my_threading_main_parser.parse_args()
     mythreadingexamples = MyThreading()
+    if my_args.thread_count == True:
+        mythreadingexamples.thread_count()
     if my_args.nd_concurrent == True:
         mythreadingexamples.non_daemon_concurrent_example()
     if my_args.nd_serial == True:
@@ -163,14 +171,199 @@ def my_multiprocessing():
 
 
 def my_concurrentfutures():
-    my_concurrentfutures_parser = argparse.ArgumentParser(
+    my_main_concurrentfutures_parser = argparse.ArgumentParser(
         description="Run default concurrent futures example"
     )
-    my_concurrentfutures_parser.add_argument(
-        "--run", action="store_true", help="Run default concurrent futures example"
+    my_concurrentfutures_parser = (
+        my_main_concurrentfutures_parser.add_mutually_exclusive_group()
     )
-    my_args = my_concurrentfutures_parser.parse_args()
-    print(my_args.run)
+
+    my_concurrentfutures_parser.add_argument(
+        "--tmap-ce",
+        action="store_true",
+        help="ThreadPoolExecutor map with corresponding elements",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--tmap-tu", action="store_true", help="ThreadPoolExecutor map with tuples"
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--tsubmit", action="store_true", help="ThreadPoolExecutor submit example"
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--tresult", action="store_true", help="ThreadPoolExecutor result usage example"
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--tascomplete",
+        action="store_true",
+        help="ThreadPoolExecutor ascomplete example",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--tdone",
+        action="store_true",
+        help="ThreadPoolExecutor done example",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--tcallback",
+        action="store_true",
+        help="ThreadPoolExecutor callback example",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--tshutdown-true",
+        action="store_true",
+        help="ThreadPoolExecutor shutdown example wait true",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--tshutdown-false",
+        action="store_true",
+        help="ThreadPoolExecutor shutdown example wait false",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--tcancel",
+        action="store_true",
+        help="ThreadPoolExecutor cancel example",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--tcancel-ec",
+        action="store_true",
+        help="ThreadPoolExecutor cancel with thread event_check example",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--tqueueeg",
+        action="store_true",
+        help="ThreadPoolExecutor queue.queue() queue example",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--tlqueueeg",
+        action="store_true",
+        help="ThreadPoolExecutor queue.queue() queue example with lock",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--tdequeueeg",
+        action="store_true",
+        help="ThreadPoolExecutor collections.dequeue() example",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--tldequeueeg",
+        action="store_true",
+        help="ThreadPoolExecutor collections.dequeue() example with lock",
+    )
+    ###
+    my_concurrentfutures_parser.add_argument(
+        "--pmap-ce",
+        action="store_true",
+        help="ProcessPoolExecutor map with corresponding elements",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--pmap-tu", action="store_true", help="ProcessPoolExecutor map with tuples"
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--psubmit", action="store_true", help="ProcessPoolExecutor submit example"
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--presult",
+        action="store_true",
+        help="ProcessPoolExecutor result usage example",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--pascomplete",
+        action="store_true",
+        help="ProcessPoolExecutor ascomplete example",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--pdone",
+        action="store_true",
+        help="ProcessPoolExecutor done example",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--pcallback",
+        action="store_true",
+        help="ProcessPoolExecutor callback example",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--pshutdown-true",
+        action="store_true",
+        help="ProcessPoolExecutor shutdown example wait true",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--pshutdown-false",
+        action="store_true",
+        help="ProcessPoolExecutor shutdown example wait false",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--pcancel",
+        action="store_true",
+        help="ProcessPoolExecutor cancel example",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--pcancel-ec",
+        action="store_true",
+        help="ProcessPoolExecutor cancel with thread event_check example",
+    )
+    my_concurrentfutures_parser.add_argument(
+        "--pqueue",
+        action="store_true",
+        help="ProcessPoolExecutor multiprocessing.Queue() queue example",
+    )
+
+    my_args = my_main_concurrentfutures_parser.parse_args()
+    mythreadfuturesexamples = MyThreadConcurrentfutures()
+    myprocessfuturesexamples = MyProcessConcurrentfutures()
+
+    if my_args.tmap_ce == True:
+        mythreadfuturesexamples.map_corresponding()
+    if my_args.tmap_tu == True:
+        mythreadfuturesexamples.map_tuples()
+    if my_args.tsubmit == True:
+        mythreadfuturesexamples.submit_example()
+    if my_args.tresult == True:
+        mythreadfuturesexamples.result_example()
+    if my_args.tascomplete == True:
+        mythreadfuturesexamples.as_complete_example()
+    if my_args.tdone == True:
+        mythreadfuturesexamples.done_example()
+    if my_args.tcallback == True:
+        mythreadfuturesexamples.callback_example()
+    if my_args.tshutdown_true == True:
+        mythreadfuturesexamples.shutdown_wait_true_example()
+    if my_args.tshutdown_false == True:
+        mythreadfuturesexamples.shutdown_wait_false_example()
+    if my_args.tcancel == True:
+        mythreadfuturesexamples.cancel_example()
+    if my_args.tcancel_ec == True:
+        mythreadfuturesexamples.cancel_example_with_event()
+    if my_args.tqueueeg == True:
+        mythreadfuturesexamples.queue_example()
+    if my_args.tlqueueeg == True:
+        mythreadfuturesexamples.ldqueue_example()
+    if my_args.tdequeueeg == True:
+        mythreadfuturesexamples.dqueue_example()
+    if my_args.tldequeueeg == True:
+        mythreadfuturesexamples.ldqueue_example()
+    ##
+    if my_args.pmap_ce == True:
+        myprocessfuturesexamples.map_corresponding()
+    if my_args.pmap_tu == True:
+        myprocessfuturesexamples.map_tuples()
+    if my_args.psubmit == True:
+        myprocessfuturesexamples.submit_example()
+    if my_args.presult == True:
+        myprocessfuturesexamples.result_example()
+    if my_args.pascomplete == True:
+        myprocessfuturesexamples.as_complete_example()
+    if my_args.pdone == True:
+        myprocessfuturesexamples.done_examaple()
+    if my_args.pcallback == True:
+        myprocessfuturesexamples.callback_example()
+    if my_args.pshutdown_true == True:
+        myprocessfuturesexamples.shutdown_wait_true_example()
+    if my_args.pshutdown_false == True:
+        myprocessfuturesexamples.shutdown_wait_false_example()
+    if my_args.pcancel == True:
+        myprocessfuturesexamples.cancel_example()
+    if my_args.pcancel_ec == True:
+        myprocessfuturesexamples.cancel_example_with_event()
+    if my_args.pqueue == True:
+        myprocessfuturesexamples.queue_example()
 
 
 def my_asyncio():
