@@ -145,6 +145,11 @@ def my_multiprocessing():
         action="store_true",
         help="Multiprocess with a dequeue.",
     )
+    my_multiprocessing_parser.add_argument(
+        "--pipeexample",
+        action="store_true",
+        help="Multiprocess with a pipe example.",
+    )
 
     my_args = my_main_multiprocessing_parser.parse_args()
     mymultiprocessingexamples = MyMultiprocessing()
@@ -168,6 +173,8 @@ def my_multiprocessing():
         mymultiprocessingexamples.multiprocessing_joinable_queue()
     if my_args.qdqexample == True:
         mymultiprocessingexamples.multiprocessing_using_a_dequeue()
+    if my_args.pipeexample == True:
+        mymultiprocessingexamples.pipe_example()
 
 
 def my_concurrentfutures():
