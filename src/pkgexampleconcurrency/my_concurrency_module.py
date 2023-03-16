@@ -311,6 +311,11 @@ def my_concurrentfutures():
         action="store_true",
         help="ProcessPoolExecutor multiprocessing.Queue() queue example",
     )
+    my_concurrentfutures_parser.add_argument(
+        "--ppipeexample",
+        action="store_true",
+        help="ProcessPoolExecutor pipe example",
+    )
 
     my_args = my_main_concurrentfutures_parser.parse_args()
     mythreadfuturesexamples = MyThreadConcurrentfutures()
@@ -371,6 +376,8 @@ def my_concurrentfutures():
         myprocessfuturesexamples.cancel_example_with_event()
     if my_args.pqueue == True:
         myprocessfuturesexamples.queue_example()
+    if my_args.ppipeexample == True:
+        myprocessfuturesexamples.pipe_example()
 
 
 def my_asyncio():

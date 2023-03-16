@@ -832,6 +832,41 @@ class MyThreadConcurrentfutures:
             # Verify that all tasks were processed
             if my_queue:
                 raise ValueError("Not all tasks were processed")
+        print(
+            """ 
+    def ldqworker(self, queue, lock):
+        while True:
+            try:
+                with lock:
+                    item = queue.popleft()
+            except IndexError:
+                # Queue is empty, exit worker loop
+                break
+            # Do some work on the item
+            print(f"Processing item {item}")
+
+    def ldqueue_example(self):
+        # Create a queue and fill it with some items
+        my_queue = deque(range(10))
+        my_lock = threading.Lock()
+
+        # Create a thread pool executor with 3 worker threads
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            # Submit the worker function to the executor
+            num_tasks = len(my_queue)
+            futures = []
+            for _ in range(3):
+                future = executor.submit(self.ldqworker, my_queue, my_lock)
+                futures.append(future)
+
+            # Wait for all tasks to complete
+            concurrent.futures.wait(futures)
+
+            # Verify that all tasks were processed
+            if my_queue:
+                raise ValueError("Not all tasks were processed")
+        """
+        )
 
 
 class MyProcessConcurrentfutures:
@@ -1514,5 +1549,64 @@ class MyProcessConcurrentfutures:
             # Wait for the worker to finish
             for future in futures:
                 future.result()
+        """
+        )
+
+    def pipe_worker(self, pipe, data):
+        result = data**2
+        pipe.send(result)
+
+    def pipe_example(self):
+        # Create a pipe for communication between threads
+        parent_conn, child_conn = multiprocessing.Pipe()
+
+        # Create a thread pool
+        with concurrent.futures.ProcessPoolExecutor() as executor:
+            # Submit two tasks to the thread pool
+            futures = []
+            for i in range(2):
+                future = executor.submit(self.pipe_worker, child_conn, i)
+                futures.append(future)
+
+            # Wait for the tasks to complete
+            concurrent.futures.wait(futures)
+
+            # Get the results from the pipe
+            results = []
+            while parent_conn.poll():
+                result = parent_conn.recv()
+                results.append(result)
+
+        # Print the results
+        print(results)
+        print(
+            """ 
+    def pipe_worker(self, pipe, data):
+        result = data**2
+        pipe.send(result)
+
+    def pipe_example(self):
+        # Create a pipe for communication between threads
+        parent_conn, child_conn = multiprocessing.Pipe()
+
+        # Create a thread pool
+        with concurrent.futures.ProcessPoolExecutor() as executor:
+            # Submit two tasks to the thread pool
+            futures = []
+            for i in range(2):
+                future = executor.submit(self.pipe_worker, child_conn, i)
+                futures.append(future)
+
+            # Wait for the tasks to complete
+            concurrent.futures.wait(futures)
+
+            # Get the results from the pipe
+            results = []
+            while parent_conn.poll():
+                result = parent_conn.recv()
+                results.append(result)
+
+        # Print the results
+        print(results)
         """
         )
