@@ -518,3 +518,48 @@ multiprocessing.JoinableQueue()
 
             """
         )
+
+    def sender(self, conn):
+        conn.send("Hello from sender!")
+        conn.close()
+
+    def receiver(self, conn):
+        message = conn.recv()
+        conn.close()
+        print(f"Received message: {message}")
+
+    def pipe_example(self):
+        parent_conn, child_conn = multiprocessing.Pipe()
+        p1 = multiprocessing.Process(target=self.sender, args=(child_conn,))
+        p2 = multiprocessing.Process(target=self.receiver, args=(parent_conn,))
+        p1.start()
+        p2.start()
+        p1.join()
+        p2.join()
+        print(
+            """
+    def sender(self,conn):
+        conn.send("Hello from sender!")
+        conn.close()
+
+    def receiver(self,conn):
+        message = conn.recv()
+        conn.close()
+        print(f"Received message: {message}")
+
+    def pipe_example(self):
+        parent_conn, child_conn = multiprocessing.Pipe()
+        p1 = multiprocessing.Process(target=self.sender, args=(child_conn,))
+        p2 = multiprocessing.Process(target=self.receiver, args=(parent_conn,))
+        p1.start()
+        p2.start()
+        p1.join()
+        p2.join()
+
+        # Both the parent and child processes can use the send and recv methods 
+        # to send and receive data through the connection objects. The choice of 
+        # which end of the pipe to use for sending and which to use for receiving 
+        # is up to the specific implementation of the communication protocol.
+        
+                              """
+        )
