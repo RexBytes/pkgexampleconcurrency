@@ -31,7 +31,7 @@ This would be your maxium number of concurrent workers.
     ProcessPoolExecutor(max_workers={cpu_count})
     
 Of course, you could double the number, but half of your processes 
-won't be executing concurrently"""
+won't be executing concurrently and the job will take twice the time"""
         )
 
     def print_evens(self):
@@ -129,8 +129,37 @@ This is the only configuration I will reproduce just to show you how it is done.
 Here the main process stays alive until all non-daemon processes finish their tasks.
 
 The processes are distributed between your processor cores.  The multiprocessor module
-takes care of the scheduling"""
+takes care of the scheduling
+
+"""
         )
+        print(
+            """
+
+    def print_evens(self):
+        max_num = 6
+        for i in range(0, max_num + 1, 2):
+            time.sleep(max_num + 1 - i)
+            print(i)
+
+    def print_odds(self):
+        max_num = 6
+        for i in range(1, max_num + 1, 2):
+            time.sleep(i + 1)
+            print(i)
+
+    process1 = multiprocessing.Process(daemon=False, target=self.print_evens)
+    process2 = multiprocessing.Process(daemon=False, target=self.print_odds)
+
+    process1.start()
+    process2.start()
+
+    process1.join()
+    process2.join()
+
+          """
+        )
+
         process1 = multiprocessing.Process(daemon=False, target=self.print_evens)
         process2 = multiprocessing.Process(daemon=False, target=self.print_odds)
 
@@ -184,6 +213,23 @@ so the main process waited for the worker process to finish. """
         )
 
     def pool_example_square(self):
+        print(
+            """ 
+    from multiprocessing import Pool
+
+    def square_number(self, x):
+        return x**2
+
+    pool = Pool(processes=4)
+
+    inputs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+    results = pool.map(self.square_number, inputs)
+
+    pool.close()
+    pool.join()
+        """
+        )
         pool = Pool(processes=4)
 
         inputs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -196,12 +242,39 @@ so the main process waited for the worker process to finish. """
         print(results)
 
     def pool_context_example_square(self):
+        print(
+            """ 
+    from multiprocessing import Pool
+
+    def square_number(self, x):
+        return x**2
+
+    with Pool(processes=4) as pool:
+        inputs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        results = pool.map(self.square_number, inputs)
+    print(results)
+
+        """
+        )
         with Pool(processes=4) as pool:
             inputs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
             results = pool.map(self.square_number, inputs)
         print(results)
 
     def pool_context_example_add(self):
+        print(
+            """ 
+    def add_numbers(self, args):
+        x, y = args
+        return x + y
+
+    with Pool(processes=4) as pool:
+        inputs = [(1, 2), (3, 4), (5, 6), (7, 8), (9, 10)]
+        results = pool.map(self.add_numbers, inputs)
+    print(results)
+
+        """
+        )
         with Pool(processes=4) as pool:
             inputs = [(1, 2), (3, 4), (5, 6), (7, 8), (9, 10)]
             results = pool.map(self.add_numbers, inputs)
