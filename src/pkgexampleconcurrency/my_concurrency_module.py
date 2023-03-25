@@ -2,6 +2,7 @@ import argparse
 from .mythreading import MyThreading
 from .mymultiprocessing import MyMultiprocessing
 from .myconcurrentfutures import MyThreadConcurrentfutures, MyProcessConcurrentfutures
+from .myasyncio import MyAsyncio
 
 
 def my_threading():
@@ -381,11 +382,109 @@ def my_concurrentfutures():
 
 
 def my_asyncio():
+    myasyncioexamples = MyAsyncio()
     my_asyncio_parser = argparse.ArgumentParser(
         description="Run default asyncio example"
     )
     my_asyncio_parser.add_argument(
         "--run", action="store_true", help="Run default asyncio example"
     )
+    my_asyncio_parser.add_argument(
+        "--helloio", action="store_true", help="async/await hello world!"
+    )
+    my_asyncio_parser.add_argument(
+        "--gather", action="store_true", help="gather together async functions"
+    )
+    my_asyncio_parser.add_argument(
+        "--generator",
+        action="store_true",
+        help="generator example, yeild turns a function in to a generator",
+    )
+    my_asyncio_parser.add_argument(
+        "--sleep",
+        action="store_true",
+        help="sleep example,",
+    )
+    my_asyncio_parser.add_argument(
+        "--tothread",
+        action="store_true",
+        help="to_thread example,",
+    )
+    my_asyncio_parser.add_argument(
+        "--createtask",
+        action="store_true",
+        help="createtask example,",
+    )
+    my_asyncio_parser.add_argument(
+        "--wait",
+        action="store_true",
+        help="wait examples,",
+    )
+    my_asyncio_parser.add_argument(
+        "--ascomplete",
+        action="store_true",
+        help="as_complete example,",
+    )
+    my_asyncio_parser.add_argument(
+        "--lock",
+        action="store_true",
+        help="lock example, syncronization primative",
+    )
+    my_asyncio_parser.add_argument(
+        "--event",
+        action="store_true",
+        help="event example, syncronization primative",
+    )
+    my_asyncio_parser.add_argument(
+        "--condition",
+        action="store_true",
+        help="condition example, syncronization primative",
+    )
+    my_asyncio_parser.add_argument(
+        "--semaphore",
+        action="store_true",
+        help="semaphore example",
+    )
+    my_asyncio_parser.add_argument(
+        "--queue",
+        action="store_true",
+        help="queue example",
+    )
+
     my_args = my_asyncio_parser.parse_args()
-    print(my_args.run)
+
+    if my_args.helloio == True:
+        myasyncioexamples.helloio()
+
+    if my_args.gather == True:
+        myasyncioexamples.gather_example()
+
+    if my_args.generator == True:
+        myasyncioexamples.gather_example()
+
+    if my_args.sleep == True:
+        myasyncioexamples.sleep_example()
+
+    if my_args.tothread == True:
+        myasyncioexamples.to_thread_example()
+
+    if my_args.createtask == True:
+        myasyncioexamples.create_task_example()
+
+    if my_args.wait == True:
+        myasyncioexamples.wait_examples()
+
+    if my_args.lock == True:
+        myasyncioexamples.lock_example()
+
+    if my_args.event == True:
+        myasyncioexamples.event_example()
+
+    if my_args.condition == True:
+        myasyncioexamples.conditions_examples()
+
+    if my_args.semaphore == True:
+        myasyncioexamples.semaphore_example()
+
+    if my_args.queue == True:
+        myasyncioexamples.queue_example()
