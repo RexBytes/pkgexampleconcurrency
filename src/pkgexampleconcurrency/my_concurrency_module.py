@@ -387,9 +387,6 @@ def my_asyncio():
         description="Run default asyncio example"
     )
     my_asyncio_parser.add_argument(
-        "--run", action="store_true", help="Run default asyncio example"
-    )
-    my_asyncio_parser.add_argument(
         "--helloio", action="store_true", help="async/await hello world!"
     )
     my_asyncio_parser.add_argument(

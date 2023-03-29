@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pkgexampleconcurrency"
-version = "0.0.8"
+version = "0.0.9"
 authors = [
   { name="Good Boy", email="pythonic@rexbytes.com" },
 ]
@@ -23,7 +23,7 @@ dependencies=[]
 [project.urls]
 "Homepage" = "https://github.com/RexBytes/pkgexampleconcurrency"
 "Bug Tracker" = "https://github.com/RexBytes/pkgexampleconcurrency/issues"
-"Download URL" ="https://github.com/RexBytes/pkgexampleconcurrency/archive/refs/tags/v0.0.8.tar.gz"
+"Download URL" ="https://github.com/RexBytes/pkgexampleconcurrency/archive/refs/tags/v0.0.9.tar.gz"
 
 [project.scripts]
 rexthreading = "pkgexampleconcurrency:my_concurrency_module.my_threading"
