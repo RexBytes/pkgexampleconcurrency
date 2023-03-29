@@ -450,6 +450,16 @@ def my_asyncio():
         action="store_true",
         help="queue example",
     )
+    my_asyncio_parser.add_argument(
+        "--queuel",
+        action="store_true",
+        help="queue example with lock",
+    )
+    my_asyncio_parser.add_argument(
+        "--queuec",
+        action="store_true",
+        help="queue example with condition",
+    )
 
     my_args = my_asyncio_parser.parse_args()
 
@@ -460,7 +470,7 @@ def my_asyncio():
         myasyncioexamples.gather_example()
 
     if my_args.generator == True:
-        myasyncioexamples.gather_example()
+        myasyncioexamples.yeild_and_generators()
 
     if my_args.sleep == True:
         myasyncioexamples.sleep_example()
@@ -473,6 +483,9 @@ def my_asyncio():
 
     if my_args.wait == True:
         myasyncioexamples.wait_examples()
+
+    if my_args.ascomplete == True:
+        myasyncioexamples.as_complete_example()
 
     if my_args.lock == True:
         myasyncioexamples.lock_example()
@@ -488,3 +501,9 @@ def my_asyncio():
 
     if my_args.queue == True:
         myasyncioexamples.queue_example()
+
+    if my_args.queuel == True:
+        myasyncioexamples.queuel_example()
+
+    if my_args.queuec == True:
+        myasyncioexamples.queuec_example()
